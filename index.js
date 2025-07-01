@@ -5,7 +5,7 @@ let username;
 document.getElementById("sub").onclick = function(){
        
     username = document.getElementById("username").value;
-    if (username == "mishtifix"){
+    if (username == "mumtahina"){
         window.location.href = "home.html";
     }
 
