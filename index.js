@@ -8,7 +8,7 @@ document.getElementById("sub").onclick = function(){
     if (username == "mumtahina"){
         window.location.href = "home.html";
     }
-    if (username == "mustafiz"){
+    if (username == "mishtifix"){
         window.location.href = "home.html";
     }
 
