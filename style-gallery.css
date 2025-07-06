@@ -1,0 +1,142 @@
+h1{
+    text-align: center;
+}
+
+.arrowleft{
+    font-size: 80px;
+    display: flex;
+    align-items: center; /* vertically center image and arrow */
+    gap: 10px;
+    height: calc(155vh);
+    position: absolute;
+    left: 40%;
+    cursor: pointer;
+    user-select: none;
+}
+
+.arrowright{
+    font-size: 80px;
+    display: flex;
+    align-items: center; /* vertically center image and arrow */
+    gap: 10px;
+    height: calc(155vh);
+    position: absolute;
+    right: 40%;
+    cursor: pointer;
+    user-select: none;
+}
+
+
+
+.images{
+    max-width: 100%;
+    max-height: 100%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 15px;
+}
+
+.imagesdiv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 170px); 
+}
+
+html, body{ 
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #FFB6C1;
+    font-family: 'Dancing Script', cursive;
+    font-size: larger;
+    background: linear-gradient(180deg,#f88185, #f8c6b8);  
+
+}
+
+.main-header {
+    margin: 0;
+  background-color: #fff;
+  background: linear-gradient(180deg,#ffffff, #fabdad);  
+  padding: 20px;
+  text-align: center;
+  font-size: 28px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+  position: sticky;
+  top: 0px;
+  z-index: 100;
+}
+
+#counter{
+    position: absolute;
+    left: 49.5%;
+    top: 85.5%;
+}
+
+#counter2{
+    position: absolute;
+    right: 50.75%;
+    top: 85.5%;
+}
+
+
+
+.heart:nth-child(1)  { left: 10%; font-size: 20px; animation-duration: 5s; animation-delay: 0s; }
+.heart:nth-child(2)  { left: 20%; font-size: 30px; animation-duration: 8s; animation-delay: 1s; }
+.heart:nth-child(3)  { left: 30%; font-size: 24px; animation-duration: 7s; animation-delay: 1s; }
+.heart:nth-child(4)  { left: 40%; font-size: 37px; animation-duration: 9s; animation-delay: 1s; }
+.heart:nth-child(5)  { left: 50%; font-size: 28px; animation-duration: 7.5s; animation-delay: 1s; }
+.heart:nth-child(6)  { left: 60%; font-size: 22px; animation-duration: 6.5s; animation-delay: 1s; }
+.heart:nth-child(7)  { left: 70%; font-size: 35px; animation-duration: 8s; animation-delay: 1s; }
+.heart:nth-child(8)  { left: 80%; font-size: 26px; animation-duration: 7s; animation-delay: 2s; }
+.heart:nth-child(9)  { left: 90%; font-size: 32px; animation-duration: 6s; animation-delay: 1s; }
+.heart:nth-child(10) { left: 95%; font-size: 27px; animation-duration: 7.8s; animation-delay: 1s; }
+.heart:nth-child(11) { left: 5%; font-size: 22px; animation-duration: 7.8s; animation-delay: 1s; }
+
+
+.heart-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+
+
+.heart {
+  position: absolute;
+  bottom: 0;
+  animation-name: floatUp;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  opacity: 0;
+}
+
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 50%;
+  }
+  10% {
+    opacity: 50%;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(-30px); /* drift left a little */
+    opacity: 100%;
+  }
+}
+
+
+.heart img {
+  width: 30px;
+  height: 30px;
+  display: block;
+  pointer-events: none;
+  opacity: 0.9;
+
+  /* Glow effect */
+  filter: drop-shadow(0 0 10px #ff69b4)
+          drop-shadow(0 0 20px #ff69b4);
+}

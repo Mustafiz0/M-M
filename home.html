@@ -34,22 +34,19 @@
     </div>
     </a>
 
-    <a href="notes.html">
-    <div class="card-container">
+    <div class="card-container" id="notesButton">
         <div class="card">
             <div class="card-front">📃Notes</div>
-      
         </div>
     </div>
-    </a>
 
-    <a href="gallery.html">
-    <div class="card-container">
+
+    <div class="card-container" id="galleryButton">
         <div class="card">
             <div class="card-front">📁Gallery</div>
         </div>
     </div>
-    </a>
+
 
     <a href="timeline.html">
     <div class="card-container">
@@ -74,6 +71,94 @@
   <span class="heart">mishtifix❤️</span>
   <span class="heart">mumtagenius❤️</span>
 </div>
+
+
+
+<div id="popupOverlay" class="popup-overlay">
+  <div class="popup-box">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <button onclick="handleCreate()">Mishu💗</button>
+    <button onclick="handleView()">Zaru💓</button>
+  </div>
+</div>
+
+<script>
+  const notesButton = document.getElementById('notesButton');
+  const popupOverlay = document.getElementById('popupOverlay');
+
+  notesButton.addEventListener('click', function (e) {
+    e.preventDefault();
+    popupOverlay.style.display = 'flex';
+  });
+
+  function closePopup() {
+    popupOverlay.style.display = 'none';
+  }
+
+  function handleCreate() {
+    closePopup();
+    window.location.href = "notes.html"; // You can redirect or show create interface
+  }
+
+  function handleView() {
+    closePopup();
+    window.location.href = "notes2.html"; // You can redirect or load existing notes
+  }
+
+  // Optional: Close popup if user clicks outside the box
+  window.addEventListener('click', function (e) {
+    if (e.target === popupOverlay) {
+      closePopup();
+    }
+  });
+</script>
+
+
+<div id="galleryPopupOverlay" class="popup-overlay">
+  <div class="popup-box">
+    <span class="close-btn" onclick="closeGalleryPopup()">&times;</span>
+    <button onclick="handleViewGallery()">Me</button>
+    +
+    <button onclick="handleAddGallery()">You</button>
+    =
+    <button onclick="handleViewCategories()">Together Forever</button>
+  </div>
+</div>
+
+<script>
+  const galleryButton = document.getElementById('galleryButton');
+  const galleryPopupOverlay = document.getElementById('galleryPopupOverlay');
+
+  galleryButton.addEventListener('click', function (e) {
+    e.preventDefault();
+    galleryPopupOverlay.style.display = 'flex';
+  });
+
+  function closeGalleryPopup() {
+    galleryPopupOverlay.style.display = 'none';
+  }
+
+  function handleViewGallery() {
+    closeGalleryPopup();
+    window.location.href = "gallery.html";
+  }
+
+  function handleAddGallery() {
+    closeGalleryPopup();
+    window.location.href = "gallery2.html";
+  }
+
+  function handleViewCategories() {
+    closeGalleryPopup();
+    window.location.href = "gallery3.html";
+  }
+
+  window.addEventListener('click', function (e) {
+    if (e.target === galleryPopupOverlay) {
+      closeGalleryPopup();
+    }
+  });
+</script>
 
 
 
