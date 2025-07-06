@@ -9,7 +9,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom right, #ffa6b7, ); /* you can customize */
+  background: linear-gradient(0deg,#d3314c , #fad0c4 );  
   background-attachment: fixed; /* keeps it smooth on scroll */
   background-repeat: no-repeat;
   background-size: cover; 
@@ -20,6 +20,9 @@ h1{
     color: rgb(255, 255, 255);
     letter-spacing: 2px;
     font-size: 100px;
+    text-shadow:
+        0 0 5px #fff,
+        0 0 40px #ff002b;
 }
 
 
@@ -28,7 +31,6 @@ h1{
     background-color: #FFB6C1;
     font-family: 'Dancing Script', cursive;
     font-size: larger;
-    background: linear-gradient(45deg,#ff9a9e, #fad0c4);  
 }
 
 .navbar{
@@ -71,7 +73,7 @@ h1{
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border: 1px solid #ccc;
+  border: 0px solid #ff0808;
   border-radius: 12px;
   display: flex;
   align-items: center;
