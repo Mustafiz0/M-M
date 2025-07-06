@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📸 Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
   <style>
-    
     * {
       box-sizing: border-box;
     }
@@ -141,69 +143,47 @@
     .heart:nth-child(9)  { left: 90%; animation-duration: 8s; animation-delay: 2s; }
     .heart:nth-child(10) { left: 95%; animation-duration: 9s; animation-delay: 1.5s; }
     .heart:nth-child(11) { left: 5%; animation-duration: 10s; animation-delay: 2.5s; }
-  
-    /* Your existing styles here... including arrows, hearts, viewer, etc. */
-    body, html { /* same */ }
-    /* ... */
-    .delete-btn { /* same delete button styling */ }
   </style>
 </head>
 <body>
+
   <h1 class="main-header">📸 Gallery</h1>
+
   <span class="arrowleft" id="arrowL">⬅</span>
   <span class="arrowright" id="arrowR">➡</span>
+
   <div class="imagesdiv" id="viewer"></div>
   <div id="counter"></div>
 
   <div class="upload-section">
-    <button class="upload-btn" onclick="imageInput.click()">Upload Image</button>
-    <input type="file" id="imageInput" accept="image/*" style="display:none" multiple>
-
-    <button class="upload-btn" onclick="videoInput.click()">Upload Video</button>
-    <input type="file" id="videoInput" accept="video/*" style="display:none">
+    <button class="upload-btn" onclick="document.getElementById('uploadInput').click()">Upload Image/Video</button>
+    <input type="file" id="uploadInput" accept="image/*,video/*" multiple>
   </div>
 
+  <!-- Floating heart images -->
   <div class="heart-container">
-    <!-- your heart span icons here -->
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
+    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
   </div>
 
-<!-- Supabase Client Script -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  window.onload = async () => {
-    const { createClient } = supabase;
-    const supabaseUrl = "https://befjvadrpnqntgvxbxiq.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
-    const supabaseClient = createClient(supabaseUrl, supabaseKey);
-
+  <script>
     const uploadInput = document.getElementById("uploadInput");
     const viewer = document.getElementById("viewer");
     const arrowL = document.getElementById("arrowL");
     const arrowR = document.getElementById("arrowR");
     const counter = document.getElementById("counter");
 
-    let gallery = [];
+    let gallery = JSON.parse(localStorage.getItem("galleryItems")) || [];
     let current = 0;
-
-    async function fetchGallery() {
-      const { data, error } = await supabaseClient
-        .storage
-        .from('gallery')
-        .list('', { limit: 100, sortBy: { column: 'created_at', order: 'asc' } });
-
-      if (error) {
-        console.error("Fetch error:", error.message);
-        return;
-      }
-
-      gallery = data.map(item => ({
-        name: item.name,
-        url: `${supabaseUrl}/storage/v1/object/public/gallery/${item.name}`
-      }));
-
-      renderCurrentItem();
-    }
 
     function renderCurrentItem() {
       viewer.innerHTML = "";
@@ -212,42 +192,36 @@
         return;
       }
 
-      const { url } = gallery[current];
-      const isVideo = url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith(".mov");
+      const item = gallery[current];
       let el;
-
-      if (isVideo) {
-        el = document.createElement("video");
-        el.src = url;
-        el.controls = true;
-      } else {
+      if (item.type.startsWith("image/")) {
         el = document.createElement("img");
-        el.src = url;
+        el.src = item.data;
+      } else if (item.type.startsWith("video/")) {
+        el = document.createElement("video");
+        el.src = item.data;
+        el.controls = true;
       }
-
       viewer.appendChild(el);
       counter.textContent = `${current + 1} / ${gallery.length}`;
     }
 
-    uploadInput.addEventListener("change", async function () {
+    uploadInput.addEventListener("change", function () {
       const files = Array.from(this.files);
-      for (let file of files) {
-        const { error } = await supabaseClient
-          .storage
-          .from('gallery')
-          .upload(file.name, file, {
-            cacheControl: '3600',
-            upsert: false
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          gallery.push({
+            type: file.type,
+            data: e.target.result
           });
-
-        if (error) {
-          console.error("Upload failed:", error.message);
-        }
-      }
-
-      await fetchGallery();
-      current = gallery.length - 1;
-      renderCurrentItem();
+          localStorage.setItem("galleryItems", JSON.stringify(gallery));
+          current = gallery.length - 1;
+          renderCurrentItem();
+        };
+        reader.readAsDataURL(file);
+      });
+      this.value = "";
     });
 
     arrowL.addEventListener("click", () => {
@@ -262,10 +236,7 @@
       renderCurrentItem();
     });
 
-    await fetchGallery();
-  };
-</script>
-
-  
+    renderCurrentItem();
+  </script>
 </body>
 </html>
