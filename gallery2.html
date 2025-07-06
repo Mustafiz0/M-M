@@ -4,6 +4,145 @@
   <title>📸 Gallery</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Dancing Script', cursive;
+      font-size: larger;
+      background: linear-gradient(180deg,#f88185, #f8c6b8);
+      overflow-x: hidden;
+    }
+
+    h1.main-header {
+      margin: 0;
+      background: linear-gradient(180deg,#ffffff, #fabdad);
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .arrowleft, .arrowright {
+      font-size: 80px;
+      display: flex;
+      align-items: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      user-select: none;
+      z-index: 10;
+    }
+
+    .arrowleft { left: 20px; }
+    .arrowright { right: 20px; }
+
+    .imagesdiv {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70vh;
+    }
+
+    .imagesdiv img, .imagesdiv video {
+      max-height: 500px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.19);
+    }
+
+    #counter {
+      text-align: center;
+      font-size: 20px;
+      color: #8b0033;
+      margin-top: 10px;
+    }
+
+    .upload-section {
+      text-align: center;
+      margin: 30px auto;
+    }
+
+    .upload-btn {
+      font-size: 18px;
+      border: none;
+      background-color: #ff69b4;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ff69b4;
+    }
+
+    .upload-btn:hover {
+      background-color: #ff1493;
+    }
+
+    #uploadInput {
+      display: none;
+    }
+
+    /* Floating hearts */
+    .heart-container {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: 0;
+      animation-name: floatUp;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      opacity: 0;
+    }
+
+    .heart img {
+      width: 30px;
+      height: 30px;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 10px #ff69b4)
+              drop-shadow(0 0 20px #ff69b4);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-120vh) translateX(-20px);
+        opacity: 0;
+      }
+    }
+
+    .heart:nth-child(1)  { left: 10%; animation-duration: 7s; animation-delay: 0s; }
+    .heart:nth-child(2)  { left: 20%; animation-duration: 9s; animation-delay: 1s; }
+    .heart:nth-child(3)  { left: 30%; animation-duration: 8s; animation-delay: 2s; }
+    .heart:nth-child(4)  { left: 40%; animation-duration: 10s; animation-delay: 3s; }
+    .heart:nth-child(5)  { left: 50%; animation-duration: 6s; animation-delay: 2s; }
+    .heart:nth-child(6)  { left: 60%; animation-duration: 9s; animation-delay: 1s; }
+    .heart:nth-child(7)  { left: 70%; animation-duration: 11s; animation-delay: 3s; }
+    .heart:nth-child(8)  { left: 80%; animation-duration: 7s; animation-delay: 1s; }
+    .heart:nth-child(9)  { left: 90%; animation-duration: 8s; animation-delay: 2s; }
+    .heart:nth-child(10) { left: 95%; animation-duration: 9s; animation-delay: 1.5s; }
+    .heart:nth-child(11) { left: 5%; animation-duration: 10s; animation-delay: 2.5s; }
+  
     /* Your existing styles here... including arrows, hearts, viewer, etc. */
     body, html { /* same */ }
     /* ... */
