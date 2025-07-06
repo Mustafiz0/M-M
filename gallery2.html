@@ -168,74 +168,98 @@
     <!-- your heart span icons here -->
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // ← Replace these with your Supabase credentials:
+  // 🔧 Configure Supabase
   const SUPABASE_URL = "https://befjvadrpnqntgvxbxiq.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZmp2YWRycG5xbnRndnhieGlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MTk5NjYsImV4cCI6MjA2NzM5NTk2Nn0.OPjt2iGbpxOl2NbEXS9MGGSr9jabllPj60uzHgcso04";
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  const uploadInput = document.getElementById("uploadInput");
   const viewer = document.getElementById("viewer");
   const arrowL = document.getElementById("arrowL");
   const arrowR = document.getElementById("arrowR");
   const counter = document.getElementById("counter");
-  const imageInput = document.getElementById("imageInput");
-  const videoInput = document.getElementById("videoInput");
 
   let gallery = JSON.parse(localStorage.getItem("galleryItems")) || [];
   let current = 0;
 
-  function renderViewer() {
+  function renderCurrentItem() {
     viewer.innerHTML = "";
-    if (gallery.length === 0) { counter.textContent = ""; return; }
+    if (gallery.length === 0) {
+      counter.textContent = "";
+      return;
+    }
+
     const item = gallery[current];
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "relative";
-
-    const el = item.type === 'image'
-      ? Object.assign(document.createElement("img"), { src: item.url })
-      : Object.assign(document.createElement("video"), { src: item.url, controls: true });
-    el.className = 'imagesdiv';
-
-    const del = document.createElement("button");
-    del.className = "delete-btn";
-    del.innerHTML = "&times;";
-    del.onclick = () => { gallery.splice(current,1); localStorage.setItem("galleryItems", JSON.stringify(gallery)); current = Math.max(0, current-1); renderViewer(); };
-    wrapper.append(el, del);
-    viewer.append(wrapper);
-    counter.textContent = `${current+1} / ${gallery.length}`;
+    let el;
+    if (item.type.startsWith("image/")) {
+      el = document.createElement("img");
+      el.src = item.data;
+    } else if (item.type.startsWith("video/")) {
+      el = document.createElement("video");
+      el.src = item.data;
+      el.controls = true;
+    }
+    el.style.maxHeight = "500px";
+    el.style.borderRadius = "15px";
+    viewer.appendChild(el);
+    counter.textContent = `${current + 1} / ${gallery.length}`;
   }
 
-  imageInput.onchange = () => {
-    Array.from(imageInput.files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        gallery.push({ type: 'image', url: e.target.result });
+  uploadInput.addEventListener("change", async function () {
+    const files = Array.from(this.files);
+    for (const file of files) {
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          gallery.push({
+            type: file.type,
+            data: e.target.result
+          });
+          localStorage.setItem("galleryItems", JSON.stringify(gallery));
+          current = gallery.length - 1;
+          renderCurrentItem();
+        };
+        reader.readAsDataURL(file);
+      } else if (file.type.startsWith("video/")) {
+        const filePath = `videos/${Date.now()}-${file.name}`;
+        const { data, error } = await supabase.storage.from("gallery").upload(filePath, file);
+
+        if (error) {
+          alert("Video upload failed: " + error.message);
+          continue;
+        }
+
+        const { data: { publicUrl } } = supabase.storage.from("gallery").getPublicUrl(filePath);
+
+        gallery.push({
+          type: file.type,
+          data: publicUrl
+        });
+
         localStorage.setItem("galleryItems", JSON.stringify(gallery));
         current = gallery.length - 1;
-        renderViewer();
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+        renderCurrentItem();
+      }
+    }
+    this.value = "";
+  });
 
-  videoInput.onchange = async () => {
-    const file = videoInput.files[0];
-    if (!file) return;
-    const path = `videos/${Date.now()}-${file.name}`;
-    const { data, error } = await supabase.storage.from('gallery').upload(path, file);
-    if (error) return alert("Upload failed: " + error.message);
+  arrowL.addEventListener("click", () => {
+    if (gallery.length === 0) return;
+    current = (current - 1 + gallery.length) % gallery.length;
+    renderCurrentItem();
+  });
 
-    const { data: { publicUrl } } = supabase.storage.from('gallery').getPublicUrl(path);
-    gallery.push({ type: 'video', url: publicUrl });
-    localStorage.setItem("galleryItems", JSON.stringify(gallery));
-    current = gallery.length - 1;
-    renderViewer();
-  };
+  arrowR.addEventListener("click", () => {
+    if (gallery.length === 0) return;
+    current = (current + 1) % gallery.length;
+    renderCurrentItem();
+  });
 
-  arrowL.onclick = () => { if (gallery.length) { current = (current-1+gallery.length)%gallery.length; renderViewer(); } };
-  arrowR.onclick = () => { if (gallery.length) { current = (current+1)%gallery.length; renderViewer(); } };
-
-  renderViewer();
+  renderCurrentItem();
 </script>
+
 </body>
 </html>
