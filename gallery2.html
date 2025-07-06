@@ -168,99 +168,105 @@
     <!-- your heart span icons here -->
   </div>
 
+<!-- Supabase Client Script -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  const { createClient } = supabase;
-  const supabaseUrl = "https://befjvadrpnqntgvxbxiq.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZmp2YWRycG5xbnRndnhieGlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MTk5NjYsImV4cCI6MjA2NzM5NTk2Nn0.OPjt2iGbpxOl2NbEXS9MGGSr9jabllPj60uzHgcso04";
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  window.onload = async () => {
+    const { createClient } = supabase;
+    const supabaseUrl = "https://befjvadrpnqntgvxbxiq.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-  const uploadInput = document.getElementById("uploadInput");
-  const viewer = document.getElementById("viewer");
-  const arrowL = document.getElementById("arrowL");
-  const arrowR = document.getElementById("arrowR");
-  const counter = document.getElementById("counter");
+    const uploadInput = document.getElementById("uploadInput");
+    const viewer = document.getElementById("viewer");
+    const arrowL = document.getElementById("arrowL");
+    const arrowR = document.getElementById("arrowR");
+    const counter = document.getElementById("counter");
 
-  let gallery = [];
-  let current = 0;
+    let gallery = [];
+    let current = 0;
 
-  async function fetchGallery() {
-    const { data, error } = await supabase
-      .storage
-      .from('gallery')  // your bucket name
-      .list('', { limit: 100, sortBy: { column: 'created_at', order: 'asc' } });
-
-    if (error) {
-      console.error("Fetch error:", error.message);
-      return;
-    }
-
-    gallery = data.map(item => ({
-      name: item.name,
-      url: `${supabaseUrl}/storage/v1/object/public/gallery/${item.name}`
-    }));
-
-    renderCurrentItem();
-  }
-
-  function renderCurrentItem() {
-    viewer.innerHTML = "";
-    if (gallery.length === 0) {
-      counter.textContent = "";
-      return;
-    }
-
-    const { url, name } = gallery[current];
-    const isVideo = url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith(".mov");
-    let el;
-
-    if (isVideo) {
-      el = document.createElement("video");
-      el.src = url;
-      el.controls = true;
-    } else {
-      el = document.createElement("img");
-      el.src = url;
-    }
-
-    viewer.appendChild(el);
-    counter.textContent = `${current + 1} / ${gallery.length}`;
-  }
-
-  uploadInput.addEventListener("change", async function () {
-    const files = Array.from(this.files);
-    for (let file of files) {
-      const { error } = await supabase.storage.from('gallery').upload(file.name, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
+    async function fetchGallery() {
+      const { data, error } = await supabaseClient
+        .storage
+        .from('gallery')
+        .list('', { limit: 100, sortBy: { column: 'created_at', order: 'asc' } });
 
       if (error) {
-        console.error("Upload failed:", error.message);
+        console.error("Fetch error:", error.message);
+        return;
       }
+
+      gallery = data.map(item => ({
+        name: item.name,
+        url: `${supabaseUrl}/storage/v1/object/public/gallery/${item.name}`
+      }));
+
+      renderCurrentItem();
     }
 
+    function renderCurrentItem() {
+      viewer.innerHTML = "";
+      if (gallery.length === 0) {
+        counter.textContent = "";
+        return;
+      }
+
+      const { url } = gallery[current];
+      const isVideo = url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith(".mov");
+      let el;
+
+      if (isVideo) {
+        el = document.createElement("video");
+        el.src = url;
+        el.controls = true;
+      } else {
+        el = document.createElement("img");
+        el.src = url;
+      }
+
+      viewer.appendChild(el);
+      counter.textContent = `${current + 1} / ${gallery.length}`;
+    }
+
+    uploadInput.addEventListener("change", async function () {
+      const files = Array.from(this.files);
+      for (let file of files) {
+        const { error } = await supabaseClient
+          .storage
+          .from('gallery')
+          .upload(file.name, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (error) {
+          console.error("Upload failed:", error.message);
+        }
+      }
+
+      await fetchGallery();
+      current = gallery.length - 1;
+      renderCurrentItem();
+    });
+
+    arrowL.addEventListener("click", () => {
+      if (gallery.length === 0) return;
+      current = (current - 1 + gallery.length) % gallery.length;
+      renderCurrentItem();
+    });
+
+    arrowR.addEventListener("click", () => {
+      if (gallery.length === 0) return;
+      current = (current + 1) % gallery.length;
+      renderCurrentItem();
+    });
+
     await fetchGallery();
-    current = gallery.length - 1;
-    renderCurrentItem();
-  });
-
-  arrowL.addEventListener("click", () => {
-    if (gallery.length === 0) return;
-    current = (current - 1 + gallery.length) % gallery.length;
-    renderCurrentItem();
-  });
-
-  arrowR.addEventListener("click", () => {
-    if (gallery.length === 0) return;
-    current = (current + 1) % gallery.length;
-    renderCurrentItem();
-  });
-
-  // Fetch items on page load
-  fetchGallery();
+  };
 </script>
+
   
 </body>
 </html>
