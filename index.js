@@ -5,10 +5,10 @@ let username;
 document.getElementById("sub").onclick = function(){
        
     username = document.getElementById("username").value;
-    if (username == "mumtahina"){
+    if (username == "mumtahina?"){
         window.location.href = "home.html";
     }
-    else if (username == "mishtifix"){
+    else if (username == "mishuuuuu"){
         window.location.href = "home.html";
     }
 
