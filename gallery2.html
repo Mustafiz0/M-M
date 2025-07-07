@@ -87,91 +87,158 @@
     <input type="file" id="uploadInput" accept="image/*,video/*" multiple>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    const supabaseUrl = "https://befjvadrpnqntgvxbxiq.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZmp2YWRycG5xbnRndnhieGlxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTgxOTk2NiwiZXhwIjoyMDY3Mzk1OTY2fQ.M12-GY-akYJ41tSrkWe2BRApwB4c4ON_0W0aAWVfcUY";
-    const client = supabase.createClient(supabaseUrl, supabaseKey);
+   <script type="module">
+        // Import Supabase client
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const uploadInput = document.getElementById("uploadInput");
-    const viewer = document.getElementById("viewer");
-    const arrowL = document.getElementById("arrowL");
-    const arrowR = document.getElementById("arrowR");
-    const counter = document.getElementById("counter");
+        // --- Supabase Configuration ---
+        // IMPORTANT: Replace with your actual Supabase URL and Anon Key
+        const SUPABASE_URL = 'https://befjvadrpnqntgvxbxiq.supabase.co'; // e.g., 'https://abcde12345.supabase.co'
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZmp2YWRycG5xbnRndnhieGlxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTgxOTk2NiwiZXhwIjoyMDY3Mzk1OTY2fQ.M12-GY-akYJ41tSrkWe2BRApwB4c4ON_0W0aAWVfcUY'; // e.g., 'eyJhbGciOiJIUzI1Ni...'
+        const SUPABASE_BUCKET = 'gallery'; // Your storage bucket name (e.g., 'media' or 'images')
+        // --- End Supabase Configuration ---
 
-    let gallery = [];
-    let current = 0;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function fetchGalleryList() {
-      const { data, error } = await client.storage.from("gallery").list("", {
-        limit: 100,
-        sortBy: { column: "name", order: "asc" },
-      });
+        const uploadInput = document.getElementById("uploadInput");
+        const viewer = document.getElementById("viewer");
+        const arrowL = document.getElementById("arrowL");
+        const arrowR = document.getElementById("arrowR");
+        const counter = document.getElementById("counter");
 
-      if (error) {
-        console.error("Fetch error:", error.message);
-        return;
-      }
+        let gallery = []; // This will now store Supabase file paths, not Data URLs
+        let current = 0;
 
-      console.log("Fetched items:", data);
+        // Function to fetch gallery items from Supabase Storage
+        async function fetchGalleryItems() {
+            viewer.textContent = "Loading media from Supabase...";
+            const { data, error } = await supabase
+                .storage
+                .from(SUPABASE_BUCKET)
+                .list('', {
+                    limit: 100, // Adjust as needed
+                    sortBy: { column: 'created_at', order: 'desc' },
+                });
 
-      gallery = data.map(item => {
-        const { publicUrl } = client.storage.from("gallery").getPublicUrl(item.name);
-        return {
-          type: item.name.match(/\.(mp4|webm)$/i) ? "video" : "image",
-          url: publicUrl
-        };
-      });
+            if (error) {
+                console.error('Error listing files from Supabase:', error);
+                viewer.textContent = "Error loading media. Check console.";
+                return;
+            }
 
-      current = 0;
-      renderCurrentItem();
-    }
+            console.log('Supabase files data:', data); // Log the raw data for debugging
 
-    function renderCurrentItem() {
-      viewer.innerHTML = "";
-      if (gallery.length === 0) {
-        counter.textContent = "";
-        return;
-      }
+            // Filter out any potential subdirectories or non-file items if necessary
+            // For now, assume data contains only file objects
+            gallery = data.filter(item => item.name !== '.emptyFolderPlaceholder'); // Remove placeholder
+            gallery.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); // Sort by creation date
 
-      const item = gallery[current];
-      let el = document.createElement(item.type === "video" ? "video" : "img");
-      el.src = item.url;
-      if (item.type === "video") el.controls = true;
-      viewer.appendChild(el);
-      counter.textContent = `${current + 1} / ${gallery.length}`;
-    }
+            if (gallery.length === 0) {
+                viewer.textContent = "No media uploaded yet. Upload something!";
+                counter.textContent = "";
+            } else {
+                current = 0; // Reset to the first item
+                renderCurrentItem();
+            }
+        }
 
-    async function uploadFile(file) {
-      const fileName = `${Date.now()}_${file.name}`;
-      const { error } = await client.storage.from("gallery").upload(fileName, file);
-      if (error) {
-        console.error("Upload error:", error.message);
-        alert("Upload failed: " + error.message);
-        return;
-      }
-      await fetchGalleryList();
-    }
+        function renderCurrentItem() {
+            viewer.innerHTML = ""; // Clear existing content
+            if (gallery.length === 0) {
+                counter.textContent = "";
+                return;
+            }
 
-    uploadInput.addEventListener("change", function () {
-      const files = Array.from(this.files);
-      files.forEach(file => uploadFile(file));
-      this.value = "";
-    });
+            const item = gallery[current]; // item now contains { name: 'image.jpg', created_at: '...', ... }
 
-    arrowL.addEventListener("click", () => {
-      if (gallery.length === 0) return;
-      current = (current - 1 + gallery.length) % gallery.length;
-      renderCurrentItem();
-    });
+            // Get the public URL for the specific file
+            const { data: publicUrlData } = supabase
+                .storage
+                .from(SUPABASE_BUCKET)
+                .getPublicUrl(item.name); // Use item.name (the file path in the bucket)
 
-    arrowR.addEventListener("click", () => {
-      if (gallery.length === 0) return;
-      current = (current + 1) % gallery.length;
-      renderCurrentItem();
-    });
+            const mediaUrl = publicUrlData?.publicUrl; // Use optional chaining for safety
 
-    fetchGalleryList();
-  </script>
+            console.log('Rendering item:', item.name, 'URL:', mediaUrl); // Log for debugging
+
+            if (!mediaUrl) {
+                viewer.textContent = `Error: Could not get URL for ${item.name}. Check Supabase RLS/public settings.`;
+                return;
+            }
+
+            let el;
+            const fileExtension = item.name.split('.').pop().toLowerCase();
+
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(fileExtension)) { // Added svg for common image types
+                el = document.createElement("img");
+                el.src = mediaUrl;
+                el.alt = item.name; // Use file name as alt text
+            } else if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
+                el = document.createElement("video");
+                el.src = mediaUrl;
+                el.controls = true;
+                el.loop = true; // Optional: loop videos
+                el.muted = true; // Optional: muted by default for autoplay
+                el.autoplay = true; // Optional: try to autoplay
+            } else {
+                viewer.textContent = `Unsupported file type: ${item.name}`;
+                console.warn('Unsupported file type for display:', item.name);
+                return; // Stop rendering for unsupported types
+            }
+            viewer.appendChild(el);
+            counter.textContent = `${current + 1} / ${gallery.length}`;
+        }
+
+        // Handle file uploads to Supabase
+        uploadInput.addEventListener("change", async function () {
+            const filesToUpload = Array.from(this.files);
+            if (filesToUpload.length === 0) return;
+
+            viewer.textContent = "Uploading..."; // Show a message during upload
+
+            for (const file of filesToUpload) {
+                // Generate a unique path for the file in Supabase storage
+                // Good practice: use a UUID or timestamp to avoid name collisions
+                const fileName = `${Date.now()}-${file.name}`; // e.g., '1678888888888-my-image.jpg'
+                const filePath = fileName; // If you want to store in root of bucket
+
+                const { data, error } = await supabase
+                    .storage
+                    .from(SUPABASE_BUCKET)
+                    .upload(filePath, file, {
+                        cacheControl: '3600', // Cache for 1 hour
+                        upsert: false // Don't overwrite existing files with same name
+                    });
+
+                if (error) {
+                    console.error('Error uploading file to Supabase:', file.name, error);
+                    alert(`Failed to upload ${file.name}: ${error.message}`);
+                    continue; // Skip to next file if upload fails
+                } else {
+                    console.log('Successfully uploaded:', data.path);
+                    // After successful upload, refresh the gallery to include the new item
+                    // No need to manually push to 'gallery' array, fetchGalleryItems will do it
+                }
+            }
+
+            this.value = ""; // Clear the input
+            await fetchGalleryItems(); // Refresh the gallery list after all uploads
+        });
+
+        arrowL.addEventListener("click", () => {
+            if (gallery.length === 0) return;
+            current = (current - 1 + gallery.length) % gallery.length;
+            renderCurrentItem();
+        });
+
+        arrowR.addEventListener("click", () => {
+            if (gallery.length === 0) return;
+            current = (current + 1) % gallery.length;
+            renderCurrentItem();
+        });
+
+        // Initial fetch of gallery items when the page loads
+        document.addEventListener('DOMContentLoaded', fetchGalleryItems);
+    </script>
 </body>
 </html>
