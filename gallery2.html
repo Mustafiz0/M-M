@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,10 +7,7 @@
   <title>📸 Gallery</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     html, body {
       height: 100%;
       margin: 0;
@@ -19,7 +17,6 @@
       background: linear-gradient(180deg,#f88185, #f8c6b8);
       overflow-x: hidden;
     }
-
     h1.main-header {
       margin: 0;
       background: linear-gradient(180deg,#ffffff, #fabdad);
@@ -31,7 +28,6 @@
       top: 0;
       z-index: 100;
     }
-
     .arrowleft, .arrowright {
       font-size: 80px;
       display: flex;
@@ -43,35 +39,29 @@
       user-select: none;
       z-index: 10;
     }
-
     .arrowleft { left: 20px; }
     .arrowright { right: 20px; }
-
     .imagesdiv {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 70vh;
     }
-
     .imagesdiv img, .imagesdiv video {
       max-height: 500px;
       border-radius: 15px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.19);
     }
-
     #counter {
       text-align: center;
       font-size: 20px;
       color: #8b0033;
       margin-top: 10px;
     }
-
     .upload-section {
       text-align: center;
       margin: 30px auto;
     }
-
     .upload-btn {
       font-size: 18px;
       border: none;
@@ -82,191 +72,106 @@
       cursor: pointer;
       box-shadow: 0 0 10px #ff69b4;
     }
-
-    .upload-btn:hover {
-      background-color: #ff1493;
-    }
-
-    #uploadInput {
-      display: none;
-    }
-
-    /* Floating hearts */
-    .heart-container {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .heart {
-      position: absolute;
-      bottom: 0;
-      animation-name: floatUp;
-      animation-timing-function: ease-in-out;
-      animation-iteration-count: infinite;
-      opacity: 0;
-    }
-
-    .heart img {
-      width: 30px;
-      height: 30px;
-      opacity: 0.9;
-      filter: drop-shadow(0 0 10px #ff69b4)
-              drop-shadow(0 0 20px #ff69b4);
-    }
-
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0) translateX(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 0.6;
-      }
-      100% {
-        transform: translateY(-120vh) translateX(-20px);
-        opacity: 0;
-      }
-    }
-
-    .heart:nth-child(1)  { left: 10%; animation-duration: 7s; animation-delay: 0s; }
-    .heart:nth-child(2)  { left: 20%; animation-duration: 9s; animation-delay: 1s; }
-    .heart:nth-child(3)  { left: 30%; animation-duration: 8s; animation-delay: 2s; }
-    .heart:nth-child(4)  { left: 40%; animation-duration: 10s; animation-delay: 3s; }
-    .heart:nth-child(5)  { left: 50%; animation-duration: 6s; animation-delay: 2s; }
-    .heart:nth-child(6)  { left: 60%; animation-duration: 9s; animation-delay: 1s; }
-    .heart:nth-child(7)  { left: 70%; animation-duration: 11s; animation-delay: 3s; }
-    .heart:nth-child(8)  { left: 80%; animation-duration: 7s; animation-delay: 1s; }
-    .heart:nth-child(9)  { left: 90%; animation-duration: 8s; animation-delay: 2s; }
-    .heart:nth-child(10) { left: 95%; animation-duration: 9s; animation-delay: 1.5s; }
-    .heart:nth-child(11) { left: 5%; animation-duration: 10s; animation-delay: 2.5s; }
+    .upload-btn:hover { background-color: #ff1493; }
+    #uploadInput { display: none; }
   </style>
 </head>
 <body>
-
   <h1 class="main-header">📸 Gallery</h1>
-
   <span class="arrowleft" id="arrowL">⬅</span>
   <span class="arrowright" id="arrowR">➡</span>
-
   <div class="imagesdiv" id="viewer"></div>
   <div id="counter"></div>
-
   <div class="upload-section">
     <button class="upload-btn" onclick="document.getElementById('uploadInput').click()">Upload Image/Video</button>
     <input type="file" id="uploadInput" accept="image/*,video/*" multiple>
   </div>
 
-  <!-- Floating heart images -->
-  <div class="heart-container">
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-    <span class="heart"><img src="—Pngtree—pink heart shape paper textured_20929721.png" alt=""></span>
-  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = "https://befjvadrpnqntgvxbxiq.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZmp2YWRycG5xbnRndnhieGlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MTk5NjYsImV4cCI6MjA2NzM5NTk2Nn0.OPjt2iGbpxOl2NbEXS9MGGSr9jabllPj60uzHgcso04";
+    const client = supabase.createClient(supabaseUrl, supabaseKey);
 
-  <!-- Supabase CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
-  const supabaseUrl = "https://befjvadrpnqntgvxbxiq.supabase.co"; // ← replace this
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZmp2YWRycG5xbnRndnhieGlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MTk5NjYsImV4cCI6MjA2NzM5NTk2Nn0.OPjt2iGbpxOl2NbEXS9MGGSr9jabllPj60uzHgcso04"; // ← replace this
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    const uploadInput = document.getElementById("uploadInput");
+    const viewer = document.getElementById("viewer");
+    const arrowL = document.getElementById("arrowL");
+    const arrowR = document.getElementById("arrowR");
+    const counter = document.getElementById("counter");
 
-  const uploadInput = document.getElementById("uploadInput");
-  const viewer = document.getElementById("viewer");
-  const arrowL = document.getElementById("arrowL");
-  const arrowR = document.getElementById("arrowR");
-  const counter = document.getElementById("counter");
+    let gallery = [];
+    let current = 0;
 
-  let gallery = [];
-  let current = 0;
+    async function fetchGalleryList() {
+      const { data, error } = await client.storage.from("gallery").list("", {
+        limit: 100,
+        sortBy: { column: "name", order: "asc" },
+      });
 
-  async function fetchGalleryList() {
-    const { data, error } = await supabase.storage.from("gallery").list("", {
-      limit: 100,
-      sortBy: { column: "created_at", order: "asc" },
+      if (error) {
+        console.error("Fetch error:", error.message);
+        return;
+      }
+
+      console.log("Fetched items:", data);
+
+      gallery = data.map(item => {
+        const { publicUrl } = client.storage.from("gallery").getPublicUrl(item.name);
+        return {
+          type: item.name.match(/\.(mp4|webm)$/i) ? "video" : "image",
+          url: publicUrl
+        };
+      });
+
+      current = 0;
+      renderCurrentItem();
+    }
+
+    function renderCurrentItem() {
+      viewer.innerHTML = "";
+      if (gallery.length === 0) {
+        counter.textContent = "";
+        return;
+      }
+
+      const item = gallery[current];
+      let el = document.createElement(item.type === "video" ? "video" : "img");
+      el.src = item.url;
+      if (item.type === "video") el.controls = true;
+      viewer.appendChild(el);
+      counter.textContent = `${current + 1} / ${gallery.length}`;
+    }
+
+    async function uploadFile(file) {
+      const fileName = `${Date.now()}_${file.name}`;
+      const { error } = await client.storage.from("gallery").upload(fileName, file);
+      if (error) {
+        console.error("Upload error:", error.message);
+        alert("Upload failed: " + error.message);
+        return;
+      }
+      await fetchGalleryList();
+    }
+
+    uploadInput.addEventListener("change", function () {
+      const files = Array.from(this.files);
+      files.forEach(file => uploadFile(file));
+      this.value = "";
     });
 
-    if (error) {
-      console.error("Fetch error:", error.message);
-      return;
-    }
-
-    gallery = data.map(item => {
-      const { publicUrl } = supabase.storage.from("gallery").getPublicUrl(item.name);
-      return {
-        type: item.name.endsWith(".mp4") || item.name.endsWith(".webm") ? "video" : "image",
-        url: publicUrl
-      };
+    arrowL.addEventListener("click", () => {
+      if (gallery.length === 0) return;
+      current = (current - 1 + gallery.length) % gallery.length;
+      renderCurrentItem();
     });
 
-    current = 0;
-    renderCurrentItem();
-  }
-
-  function renderCurrentItem() {
-    viewer.innerHTML = "";
-    if (gallery.length === 0) {
-      counter.textContent = "";
-      return;
-    }
-
-    const item = gallery[current];
-    let el;
-    if (item.type === "image") {
-      el = document.createElement("img");
-    } else if (item.type === "video") {
-      el = document.createElement("video");
-      el.controls = true;
-    }
-    el.src = item.url;
-    viewer.appendChild(el);
-    counter.textContent = `${current + 1} / ${gallery.length}`;
-  }
-
-  async function uploadFile(file) {
-    const fileName = `${Date.now()}_${file.name}`;
-    const { error } = await supabase.storage.from("gallery").upload(fileName, file);
-    if (error) {
-      console.error("Upload error:", error.message);
-      alert("Upload failed: " + error.message);
-      return;
-    }
-    await fetchGalleryList();
-  }
-
-  uploadInput.addEventListener("change", function () {
-    const files = Array.from(this.files);
-    files.forEach(file => {
-      uploadFile(file);
+    arrowR.addEventListener("click", () => {
+      if (gallery.length === 0) return;
+      current = (current + 1) % gallery.length;
+      renderCurrentItem();
     });
-    this.value = "";
-  });
 
-  arrowL.addEventListener("click", () => {
-    if (gallery.length === 0) return;
-    current = (current - 1 + gallery.length) % gallery.length;
-    renderCurrentItem();
-  });
-
-  arrowR.addEventListener("click", () => {
-    if (gallery.length === 0) return;
-    current = (current + 1) % gallery.length;
-    renderCurrentItem();
-  });
-
-  // Load gallery on page load
-  fetchGalleryList();
-</script>
+    fetchGalleryList();
+  </script>
 </body>
 </html>
